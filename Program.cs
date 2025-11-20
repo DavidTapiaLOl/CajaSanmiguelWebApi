@@ -5,12 +5,7 @@ using CajaSanmiguel;
 var builder = WebApplication.CreateBuilder(args);
 // ...
 
-// Dentro de la sección de servicios:
-builder.Services.AddDbContext<CajaSanmiguelDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connectionString); // Ahora 'UseSqlServer' debería funcionar
-});
+
 
 
 
@@ -29,7 +24,7 @@ builder.Services.AddDbContext<CajaSanmiguelDbContext>(options =>
 
 
 
-
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
