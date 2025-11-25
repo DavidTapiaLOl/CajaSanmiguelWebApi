@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 namespace CajaSanmiguel;
-
 public class Cliente
 {
     [Key]
@@ -9,7 +9,5 @@ public class Cliente
     public string Apellidos { get; set; }
     public string Telefono { get; set; }
     public string Direccion { get; set; }
-
-    // Propiedad de Navegación: Un cliente puede tener muchos préstamos
-    public ICollection<Prestamo> Prestamos { get; set; }
+    public List<Prestamo>? Prestamos {get;set;} = new List<Prestamo>();
 }

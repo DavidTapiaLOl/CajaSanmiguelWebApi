@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CajaSanmiguel.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCajaSanmiguelSetup : Migration
+    public partial class InicialReestructuracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,7 @@ namespace CajaSanmiguel.Migrations
                 name: "Usuarios",
                 columns: table => new
                 {
-                    IdCliente = table.Column<int>(type: "int", nullable: false)
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -39,7 +39,7 @@ namespace CajaSanmiguel.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.IdCliente);
+                    table.PrimaryKey("PK_Usuarios", x => x.IdUsuario);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,10 +51,11 @@ namespace CajaSanmiguel.Migrations
                     IdCliente = table.Column<int>(type: "int", nullable: false),
                     Monto = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalAPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     NumeroCuotas = table.Column<int>(type: "int", nullable: false),
+                    Lapzo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MontoMulta = table.Column<int>(type: "int", nullable: false),
+                    TotalAPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -69,60 +70,34 @@ namespace CajaSanmiguel.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CalendarioPagos",
+                name: "Pagos",
                 columns: table => new
                 {
                     IdPago = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdPrestamo = table.Column<int>(type: "int", nullable: false),
                     NumeroCuota = table.Column<int>(type: "int", nullable: false),
-                    FechaPago = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Pagado = table.Column<bool>(type: "bit", nullable: false)
+                    FechaProgramada = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MontoProgramado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    FechaPagoReal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MontoPagado = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CalendarioPagos", x => x.IdPago);
+                    table.PrimaryKey("PK_Pagos", x => x.IdPago);
                     table.ForeignKey(
-                        name: "FK_CalendarioPagos_Prestamos_IdPrestamo",
+                        name: "FK_Pagos_Prestamos_IdPrestamo",
                         column: x => x.IdPrestamo,
                         principalTable: "Prestamos",
                         principalColumn: "IdPrestamo",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Pagos",
-                columns: table => new
-                {
-                    IdRegistroPago = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdPrestamo = table.Column<int>(type: "int", nullable: false),
-                    FechaPagoReal = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MontoMultaAplicado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MontoPagado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IdPago = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pagos", x => x.IdRegistroPago);
-                    table.ForeignKey(
-                        name: "FK_Pagos_CalendarioPagos_IdPago",
-                        column: x => x.IdPago,
-                        principalTable: "CalendarioPagos",
-                        principalColumn: "IdPago",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
-                name: "IX_CalendarioPagos_IdPrestamo",
-                table: "CalendarioPagos",
-                column: "IdPrestamo");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pagos_IdPago",
+                name: "IX_Pagos_IdPrestamo",
                 table: "Pagos",
-                column: "IdPago");
+                column: "IdPrestamo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_IdCliente",
@@ -138,9 +113,6 @@ namespace CajaSanmiguel.Migrations
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
-
-            migrationBuilder.DropTable(
-                name: "CalendarioPagos");
 
             migrationBuilder.DropTable(
                 name: "Prestamos");

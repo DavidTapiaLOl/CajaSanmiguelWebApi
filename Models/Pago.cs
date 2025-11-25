@@ -1,34 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace CajaSanmiguel;
 
 public class Pago
 {
-   /*  [Key]
-    public int IdRegistroPago { get; set; } // PK
-    public int IdPrestamo { get; set; } // FK (Redundante, pero útil para consultas)
-    public int IdPago { get; set; } // FK (Referencia a la cuota específica)
-
-    public DateTime FechaPagoReal { get; set; } //Fecha del pago
-    public decimal MontoMultaAplicado { get; set; } //Multas: Monto de la multa
-    public decimal MontoPagado { get; set; } // Monto total (Cuota + Multa)
-
-    public CalendarioPago Cuota { get; set; }
-
-    [ForeignKey("IdPrestamo")]
-    public Prestamo Prestamo { get; set; } = null!;   */
-
     [Key]
-        public int IdRegistroPago { get; set; } // PK
+    public int IdPago { get; set; } // PK (Antes IdRegistroPago)
 
-        public int IdPago { get; set; }     // FK a CalendarioPago
+    // ✅ AQUÍ VA LA LLAVE FORÁNEA
+    public int IdPrestamo { get; set; } 
 
-        public DateTime FechaPagoReal { get; set; }
-        public decimal MontoMultaAplicado { get; set; }
-        public decimal MontoPagado { get; set; }
+    // Datos de la Programación (Lo que genera tu algoritmo)
+    public int NumeroCuota { get; set; } // Ej: Cuota 1 de 10
+    public DateTime FechaProgramada { get; set; } // Cuándo DEBE pagar
+    public decimal MontoProgramado { get; set; } // Cuánto DEBE pagar
 
-        // --- Propiedades de Navegación ---
+    // Datos del Pago Real (Se llenan cuando el cliente paga)
+    public DateTime? FechaPagoReal { get; set; } // Puede ser nulo si no ha pagado
+    public decimal? MontoPagado { get; set; }
+    public string Estado { get; set; } // "Pendiente", "Pagado", "Atrasado"
 
-        [ForeignKey("IdPago")]
-        public CalendarioPago Cuota { get; set; } = null!;
+    // --- RELACIÓN ---
+    [ForeignKey("IdPrestamo")]
+    [JsonIgnore]
+    public Prestamo? Prestamo { get; set; }
 }

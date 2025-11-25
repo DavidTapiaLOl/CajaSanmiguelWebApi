@@ -22,36 +22,6 @@ namespace CajaSanmiguel.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CajaSanmiguel.CalendarioPago", b =>
-                {
-                    b.Property<int>("IdPago")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPago"));
-
-                    b.Property<DateTime>("FechaPago")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdPrestamo")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("MontoCuota")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("NumeroCuota")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Pagado")
-                        .HasColumnType("bit");
-
-                    b.HasKey("IdPago");
-
-                    b.HasIndex("IdPrestamo");
-
-                    b.ToTable("CalendarioPagos");
-                });
-
             modelBuilder.Entity("CajaSanmiguel.Cliente", b =>
                 {
                     b.Property<int>("IdCliente")
@@ -83,27 +53,37 @@ namespace CajaSanmiguel.Migrations
 
             modelBuilder.Entity("CajaSanmiguel.Pago", b =>
                 {
-                    b.Property<int>("IdRegistroPago")
+                    b.Property<int>("IdPago")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRegistroPago"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPago"));
 
-                    b.Property<DateTime>("FechaPagoReal")
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaPagoReal")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdPago")
+                    b.Property<DateTime>("FechaProgramada")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdPrestamo")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontoMultaAplicado")
+                    b.Property<decimal?>("MontoPagado")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontoPagado")
+                    b.Property<decimal>("MontoProgramado")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("IdRegistroPago");
+                    b.Property<int>("NumeroCuota")
+                        .HasColumnType("int");
 
-                    b.HasIndex("IdPago");
+                    b.HasKey("IdPago");
+
+                    b.HasIndex("IdPrestamo");
 
                     b.ToTable("Pagos");
                 });
@@ -120,9 +100,6 @@ namespace CajaSanmiguel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FechaFin")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
@@ -132,7 +109,14 @@ namespace CajaSanmiguel.Migrations
                     b.Property<decimal>("Interes")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Lapzo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MontoMulta")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("NumeroCuotas")
@@ -173,26 +157,15 @@ namespace CajaSanmiguel.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("CajaSanmiguel.CalendarioPago", b =>
+            modelBuilder.Entity("CajaSanmiguel.Pago", b =>
                 {
                     b.HasOne("CajaSanmiguel.Prestamo", "Prestamo")
-                        .WithMany("CalendarioPagos")
+                        .WithMany("Pagos")
                         .HasForeignKey("IdPrestamo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Prestamo");
-                });
-
-            modelBuilder.Entity("CajaSanmiguel.Pago", b =>
-                {
-                    b.HasOne("CajaSanmiguel.CalendarioPago", "Cuota")
-                        .WithMany("Pagos")
-                        .HasForeignKey("IdPago")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cuota");
                 });
 
             modelBuilder.Entity("CajaSanmiguel.Prestamo", b =>
@@ -206,11 +179,6 @@ namespace CajaSanmiguel.Migrations
                     b.Navigation("Cliente");
                 });
 
-            modelBuilder.Entity("CajaSanmiguel.CalendarioPago", b =>
-                {
-                    b.Navigation("Pagos");
-                });
-
             modelBuilder.Entity("CajaSanmiguel.Cliente", b =>
                 {
                     b.Navigation("Prestamos");
@@ -218,7 +186,7 @@ namespace CajaSanmiguel.Migrations
 
             modelBuilder.Entity("CajaSanmiguel.Prestamo", b =>
                 {
-                    b.Navigation("CalendarioPagos");
+                    b.Navigation("Pagos");
                 });
 #pragma warning restore 612, 618
         }

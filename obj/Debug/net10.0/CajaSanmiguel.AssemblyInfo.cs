@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CajaSanmiguel")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ecbc499e5393d26a4cac171133adbf3d955c336")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34bbaceef0afd095f5fd02507d3e45c4953c9c91")]
 [assembly: System.Reflection.AssemblyProductAttribute("CajaSanmiguel")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CajaSanmiguel")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
