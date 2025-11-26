@@ -221,3 +221,7 @@ C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\obj\Debug\net10.0\refint\Ca
 C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\obj\Debug\net10.0\CajaSanmiguel.pdb
 C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\obj\Debug\net10.0\CajaSanmiguel.genruntimeconfig.cache
 C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\obj\Debug\net10.0\ref\CajaSanmiguel.dll
+C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\bin\Debug\net10.0\FluentValidation.dll
+C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
+C:\Users\juand\Documents\CajaSanmiguel\CajaSanmiguel\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll

@@ -1,4 +1,5 @@
 using CajaSanmiguel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace MyApp.Namespace
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class Pagocontroller : ControllerBase
     {
         public readonly CajaSanmiguelDbContext _context;

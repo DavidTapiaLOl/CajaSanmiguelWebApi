@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CajaSanmiguel.Migrations
 {
     [DbContext(typeof(CajaSanmiguelDbContext))]
-    [Migration("20251124180701_EstructuraFinal")]
-    partial class EstructuraFinal
+    [Migration("20251125213536_DECIMALCORREGIDO")]
+    partial class DECIMALCORREGIDO
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,6 +152,10 @@ namespace CajaSanmiguel.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Rol")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

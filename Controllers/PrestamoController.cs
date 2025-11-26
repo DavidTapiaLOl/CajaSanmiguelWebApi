@@ -1,4 +1,5 @@
 using CajaSanmiguel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace MyApp.Namespace
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PrestamoController : ControllerBase
     {
         public readonly CajaSanmiguelDbContext _context;
@@ -23,10 +25,12 @@ namespace MyApp.Namespace
         public async Task<IActionResult> CrearPrestamo([FromBody] Prestamo prestamo)
         {
             // Calcular Totales Iniciales
+            prestamo.FechaInicio = DateTime.Now;
             prestamo.TotalAPagar = prestamo.Monto + (prestamo.Monto * prestamo.Interes);
             DateTime fechaCalculo = prestamo.FechaInicio;
             decimal montoPorCuota = prestamo.TotalAPagar / prestamo.NumeroCuotas;
 
+        
             // Generar la lista de pagos
             for (int i = 1; i <= prestamo.NumeroCuotas; i++)
             {
@@ -44,7 +48,6 @@ namespace MyApp.Namespace
                 };
                 prestamo.Pagos.Add(nuevoPago);
             }
-
             _context.Prestamos.Add(prestamo);
             await _context.SaveChangesAsync();
             return Ok(prestamo);
@@ -128,6 +131,10 @@ namespace MyApp.Namespace
         [HttpPatch("{id}")]
         public async Task<IActionResult> ActualizarPrestamo(int id, [FromBody] PrestamoUpdateDto prestamoDto)
         {
+            // 1. Validación básica manual (reemplaza al validador)
+            if (prestamoDto.Monto <= 0) return BadRequest("El monto debe ser positivo.");
+            if (prestamoDto.NumeroCuotas <= 0) return BadRequest("Debe haber al menos una cuota.");
+            
             // 1. Traer el préstamo con sus pagos
             var _prestamo = await _context.Prestamos
                 .Include(p => p.Pagos) 

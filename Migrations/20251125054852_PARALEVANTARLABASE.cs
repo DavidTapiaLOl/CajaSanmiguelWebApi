@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CajaSanmiguel.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialReestructuracion : Migration
+    public partial class PARALEVANTARLABASE : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,8 @@ namespace CajaSanmiguel.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,7 +54,7 @@ namespace CajaSanmiguel.Migrations
                     Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     NumeroCuotas = table.Column<int>(type: "int", nullable: false),
                     Lapzo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MontoMulta = table.Column<int>(type: "int", nullable: false),
+                    MontoMulta = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalAPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)

@@ -7,7 +7,7 @@ public class PrestamoUpdateDto
     public decimal? Interes { get; set; }
     public int? NumeroCuotas { get; set; }
     public string? Lapzo { get; set; } // Semanal, Quincenal, Mensual
-    public Decimal? MontoMulta { get; set; }
+    public decimal? MontoMulta { get; set; }
     public DateTime? FechaInicio { get; set; }
     public string? Estado { get; set; } // Activo, Terminado
 }

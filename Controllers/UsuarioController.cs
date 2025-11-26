@@ -26,21 +26,22 @@ namespace MyApp.Namespace
 
         //..........METODO PARA CREAR UN NUEVO USUAIRO......................................
         [HttpPost]
-        public IActionResult AgregarUsuario([FromBody] Usuario usuario)
+        public async Task<IActionResult> CrearUsuario([FromBody] UsuarioRegistroDto usuarioDto)
         {
-           /*  // 🔎 EXTRAER el ID del usuario del JWT (ClaimTypes.NameIdentifier)
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            if (string.IsNullOrEmpty(userId))
+            //Pasamos los datos del DTO al Modelo real (Mapeo)
+            var nuevoUsuario = new Usuario
             {
-                // Esto no debería suceder si [Authorize] funciona correctamente
-                return Unauthorized("ID de usuario no encontrado en el token.");
-            } */
-            
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
+                Nombre = usuarioDto.Nombre,
+                Correo = usuarioDto.Correo,
+                Password = usuarioDto.Password, // Aquí sí se lee la contraseña
+                Rol = usuarioDto.Rol ?? "Empleado" // Rol por defecto si no envían nada
+            };
 
-            return Ok($"Usuario agregado con exito");
+            //Guardamos en la base de datos
+            _context.Usuarios.Add(nuevoUsuario);
+            await _context.SaveChangesAsync();
+
+            return Ok(nuevoUsuario);
         }
         //.................................................................................
 

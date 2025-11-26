@@ -152,6 +152,10 @@ namespace CajaSanmiguel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("IdUsuario");
 
                     b.ToTable("Usuarios");

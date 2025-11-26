@@ -1,55 +1,94 @@
-using Microsoft.EntityFrameworkCore; // <-- Soluciona el error de 'UseSqlServer' (CS1061)
-using CajaSanmiguel;
-
+using Microsoft.EntityFrameworkCore; 
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
+using Microsoft.IdentityModel.Tokens; 
+using System.Text; 
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using CajaSanmiguel; 
 
 var builder = WebApplication.CreateBuilder(args);
-// ...
 
+// ========================================================================
+// 1. CONFIGURACIÓN DE SERVICIOS (Inyección de Dependencias)
+// ========================================================================
 
-//.....PARA OBTENER LOS SERVICIOS DE LOS CONTROLADORES.....................
+// A. Base de Datos (Primero lo esencial)
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<CajaSanmiguelDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// B. Controladores y Configuración JSON (Para evitar ciclos infinitos)
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
-//........................................................................
 
+    // -- REGISTRAR FLUENT VALIDATION ---
+builder.Services.AddFluentValidationAutoValidation(); // Habilita la validación automática en los controladores
+builder.Services.AddFluentValidationClientsideAdapters(); // Opcional, útil para MVC clásico
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(); // Busca todos los validadores en tu proyecto
+// --------------------------------------
 
+// C. Seguridad (JWT)
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+// D. Documentación API (Swagger/OpenAPI)
 builder.Services.AddOpenApi();
 
-//..................Obtener la cadena de conexión
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// Registrar el DbContext con SQL Server
-builder.Services.AddDbContext<CajaSanmiguelDbContext>(options =>
-    options.UseSqlServer(connectionString));
-//..........................................................................
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NuevaPolitica", app =>
+    {
+        app.AllowAnyOrigin()
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+    });
+});
 
 
-
-
-
-
-
-
-
-
+// ========================================================================
+// 2. CONSTRUCCIÓN DE LA APP
+// ========================================================================
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseCors("NuevaPolitica");
+
+// ========================================================================
+// 3. CONFIGURACIÓN DEL PIPELINE (Middlewares - EL ORDEN ES CRÍTICO)
+// ========================================================================
+
+// A. Entorno de Desarrollo
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi(); // Swagger UI
 }
 
+// B. Redirección HTTPS
 app.UseHttpsRedirection();
 
-//...Mepeo de los controlladores..
+// C. SEGURIDAD (Orden: ¿Quién eres? -> ¿Qué puedes hacer?)
+app.UseAuthentication(); 
+app.UseAuthorization();
+
+// D. Mapeo de Endpoints
 app.MapControllers();
-//................................
 
-
+// ========================================================================
+// 4. EJECUCIÓN
+// ========================================================================
 app.Run();
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
