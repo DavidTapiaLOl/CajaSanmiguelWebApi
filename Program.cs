@@ -8,29 +8,28 @@ using CajaSanmiguel;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ========================================================================
-// 1. CONFIGURACIÓN DE SERVICIOS (Inyección de Dependencias)
-// ========================================================================
 
-// A. Base de Datos (Primero lo esencial)
+
+// conexcion a la base de datos
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<CajaSanmiguelDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// B. Controladores y Configuración JSON (Para evitar ciclos infinitos)
+//mapeo de los controlladores
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 
-    // -- REGISTRAR FLUENT VALIDATION ---
-builder.Services.AddFluentValidationAutoValidation(); // Habilita la validación automática en los controladores
-builder.Services.AddFluentValidationClientsideAdapters(); // Opcional, útil para MVC clásico
-builder.Services.AddValidatorsFromAssemblyContaining<Program>(); // Busca todos los validadores en tu proyecto
-// --------------------------------------
 
-// C. Seguridad (JWT)
+builder.Services.AddFluentValidationAutoValidation(); // Habilita la validación automática en los controladores
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(); // Busca todos los validadores en tu proyecto
+
+
+//configuracion jwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -46,7 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// D. Documentación API (Swagger/OpenAPI)
+
 builder.Services.AddOpenApi();
 
 
@@ -61,34 +60,27 @@ builder.Services.AddCors(options =>
 });
 
 
-// ========================================================================
-// 2. CONSTRUCCIÓN DE LA APP
-// ========================================================================
+
+//CONSTRUCCIÓN DE LA APP
 var app = builder.Build();
 
 app.UseCors("NuevaPolitica");
 
-// ========================================================================
-// 3. CONFIGURACIÓN DEL PIPELINE (Middlewares - EL ORDEN ES CRÍTICO)
-// ========================================================================
 
-// A. Entorno de Desarrollo
+
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi(); // Swagger UI
+    app.MapOpenApi(); 
 }
 
-// B. Redirección HTTPS
 app.UseHttpsRedirection();
 
-// C. SEGURIDAD (Orden: ¿Quién eres? -> ¿Qué puedes hacer?)
+//SEGURIDAD
 app.UseAuthentication(); 
 app.UseAuthorization();
 
-// D. Mapeo de Endpoints
+//Mapeo de Endpoints
 app.MapControllers();
 
-// ========================================================================
-// 4. EJECUCIÓN
-// ========================================================================
 app.Run();

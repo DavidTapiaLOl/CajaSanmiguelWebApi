@@ -55,7 +55,7 @@ namespace MyApp.Namespace
 
             //Cargar el préstamo CON sus pagos para poder recalcular
             var _infoPrestamo = await _context.Prestamos
-                .Include(p => p.Pagos) // <--- INCLUYE LA LISTA DE PAGOS
+                .Include(p => p.Pagos) //INCLUYE LA LISTA DE PAGOS
                 .FirstOrDefaultAsync(x => x.IdPrestamo == _pago.IdPrestamo);
 
             if (_infoPrestamo == null) return NotFound("El préstamo asociado no existe");
@@ -84,7 +84,6 @@ namespace MyApp.Namespace
 
                 // VARIABLES AUXILIARES
                 bool esPagoCompleto = _pago.MontoPagado >= _pago.MontoProgramado;
-                // Nota: Usamos Date para comparar solo el día, ignorando horas/minutos
                 bool esPuntual = _pago.FechaPagoReal.Value.Date <= _pago.FechaProgramada.Date;
 
                 // LÓGICA DE ESTADOS
@@ -105,7 +104,7 @@ namespace MyApp.Namespace
 
                         _pago.Estado = "Atrasado";
 
-                        // --- RECALCULO DE CUOTAS ---
+                        //RECALCULO DE CUOTAS
                         decimal dineroYaRecaudado = _infoPrestamo.Pagos
                             .Where(p => p.Estado == "Pagado")
                             .Sum(p => p.MontoPagado ?? p.MontoProgramado);
@@ -181,9 +180,7 @@ namespace MyApp.Namespace
             if (_pago == null) return NotFound("No existe el pago");
 
             var _estadoPago = _pago.Estado;
-
-            // CORRECCIÓN 4: Lógica correcta (OR en vez de AND)
-            // Si está pendiente O atrasado, no dejar borrar (asumiendo que esa es tu regla)
+            //no se puede borrar porque aun no esta pagado
             if (_estadoPago == "Pendiente" || _estadoPago == "Atrasado")
             {
                 return BadRequest($"No se puede eliminar el pago porque tiene estado: {_estadoPago}");

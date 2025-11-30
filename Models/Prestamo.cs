@@ -19,13 +19,8 @@ public class Prestamo
     public DateTime FechaInicio { get; set; }
     public string Estado { get; set; } // Activo, Terminado
 
-    // --- RELACIONES ---
-
+    //RELACIONES
     [ForeignKey("IdCliente")]
-    [JsonIgnore]
     public Cliente? Cliente { get; set; }  
-
-    // Relación 1 a Muchos: Un Préstamo tiene una lista de Pagos.
-    // EF Core buscará "IdPrestamo" en la tabla Pago automáticamente.
     public ICollection<Pago> Pagos { get; set; } = new List<Pago>();
 }

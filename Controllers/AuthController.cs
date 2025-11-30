@@ -24,17 +24,17 @@ namespace MyApp.Namespace
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
-            // 1. Buscar usuario en la BD por Correo
+            //Buscar usuario en la BD por Correo
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Correo == login.Correo);
 
-            // 2. Validar usuario y contraseña
+            // Validar usuario y contraseña
             if (usuario == null || usuario.Password != login.Password) 
             {
                 return Unauthorized("Credenciales incorrectas");
             }
 
-            // 3. Crear Claims (Información del usuario dentro del token)
+            //Crear Claims (Información del usuario dentro del token)
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
@@ -43,26 +43,26 @@ namespace MyApp.Namespace
                 new Claim(ClaimTypes.Name, usuario.Nombre)
             };
 
-            // 4. Generar la Clave de Seguridad y las Credenciales (AQUÍ FALTABA ESTO)
+            //Generar la Clave de Seguridad y las Credenciales
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            // 5. Crear el Token JWT
+            //Crear el Token JWT
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                //expires: DateTime.Now.AddHours(8), // Duración del token
-                signingCredentials: credentials); // <--- Aquí usamos la variable 'credentials' definida arriba
+                //expires: DateTime.Now.AddHours(8)  AQUI LO COMENTE PARA LAS PRUEBAS
+                signingCredentials: credentials); //Aquí usamos la variable 'credentials' definida arriba
 
-            // 6. Escribir el token como string
+            //Escribir el token como string
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return Ok(new { token = jwt });
         }
     }
 
-    // DTO para el login (puedes dejarlo aquí o en otro archivo)
+    // DTO para el login
     public class LoginDto
     {
         public string Correo { get; set; }
