@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using CajaSanmiguel; // Tu namespace
+using CajaSanmiguel; 
 
 public class ClienteValidator : AbstractValidator<Cliente>
 {
