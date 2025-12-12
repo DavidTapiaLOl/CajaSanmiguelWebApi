@@ -11,6 +11,9 @@ Funcionalidad Principal:
 Motor de Créditos Inteligente: Cálculo automático de intereses y generación de tablas de amortización (calendarios de pago) al momento de crear un préstamo.
 Gestión de Cobranza: Registro y validación de pagos individuales con actualización en tiempo real de saldos.
 Auditoría Automática (Lazy Update): Algoritmos que verifican vencimientos y aplican multas moratorias automáticamente al consultar la información, asegurando que los estados financieros estén siempre al día.
+
+
+
 Seguridad: Autenticación y autorización mediante JWT (JSON Web Tokens).
 Endpoints Implementados Destacados:
 POST /api/Auth/login: Autenticación segura y emisión de tokens.
